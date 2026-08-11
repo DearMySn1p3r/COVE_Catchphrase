@@ -9,27 +9,17 @@
 <link href="https://fonts.googleapis.com/css2?family=Chakra+Petch:wght@400;600;700&family=Noto+Sans+KR:wght@400;500;700&family=Quantico:wght@400;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --bg:#06080a;
-  --panel:#0b0e11;
-  --line:rgba(255,255,255,.08);
-  --line-2:rgba(255,255,255,.16);
-  --txt:#e6ebef;
-  --dim:#78838f;
-  --sig:#5fd8e6;
-  --r:2px;
+  --bg:#06080a; --panel:#0b0e11;
+  --line:rgba(255,255,255,.08); --line-2:rgba(255,255,255,.16);
+  --txt:#e6ebef; --dim:#78838f; --sig:#5fd8e6; --r:2px;
 }
 *{box-sizing:border-box}
 html,body{height:100%}
-body{
-  margin:0;background:var(--bg);color:var(--txt);overflow:hidden;
-  font-family:"Chakra Petch","Noto Sans KR",system-ui,sans-serif;-webkit-font-smoothing:antialiased;
-}
-body::before{
-  content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-  background:
-    radial-gradient(130% 70% at 50% -15%, rgba(95,216,230,.06), transparent 62%),
-    repeating-linear-gradient(0deg,rgba(255,255,255,.016) 0 1px,transparent 1px 3px);
-}
+body{margin:0;background:var(--bg);color:var(--txt);overflow:hidden;
+  font-family:"Chakra Petch","Noto Sans KR",system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+body::before{content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(130% 70% at 50% -15%, rgba(95,216,230,.06), transparent 62%),
+    repeating-linear-gradient(0deg,rgba(255,255,255,.016) 0 1px,transparent 1px 3px)}
 .app{position:relative;z-index:1;height:100%;display:grid;grid-template-rows:auto 1fr}
 header{display:flex;align-items:baseline;gap:14px;padding:14px 20px;border-bottom:1px solid var(--line)}
 header h1{margin:0;font-family:"Quantico",sans-serif;font-weight:700;font-size:15px;letter-spacing:.42em;text-transform:uppercase}
@@ -38,10 +28,8 @@ header p{margin:0;font-size:11px;letter-spacing:.18em;color:var(--dim);text-tran
 header .spacer{flex:1}
 header .hint{font-size:11px;color:var(--dim);letter-spacing:.05em}
 @media (max-width:880px){header .hint{display:none}}
-
 main{display:grid;grid-template-columns:1fr 300px;min-height:0}
 @media (max-width:880px){body{overflow:auto}.app{height:auto;min-height:100%}main{grid-template-columns:1fr}}
-
 .stage{position:relative;min-height:0;display:flex;align-items:center;justify-content:center;padding:22px;overflow:hidden}
 .frame{position:relative;max-width:100%;max-height:100%;box-shadow:0 0 0 1px var(--line-2),0 30px 80px rgba(0,0,0,.65)}
 canvas{display:block;width:auto;height:auto;max-width:100%;max-height:calc(100dvh - 140px);touch-action:none;cursor:grab;background:#0a0b0d}
@@ -52,7 +40,6 @@ canvas.grabbing{cursor:grabbing}
 .stage.over .drop{display:flex}
 .stagebar{position:absolute;left:22px;bottom:22px;display:flex;gap:6px}
 .stagebar button{font-size:10px;padding:6px 10px}
-
 .panel{border-left:1px solid var(--line);background:linear-gradient(180deg,rgba(255,255,255,.02),transparent 140px),var(--panel);overflow-y:auto;padding-bottom:36px}
 @media (max-width:880px){.panel{border-left:none;border-top:1px solid var(--line)}}
 .sec{border-bottom:1px solid var(--line);padding:16px 18px}
@@ -60,7 +47,6 @@ canvas.grabbing{cursor:grabbing}
 .sec>h2::before{content:"";width:5px;height:5px;background:var(--sig);transform:rotate(45deg);flex:none}
 .row{display:flex;align-items:center;gap:10px;margin:9px 0}
 .row label{flex:none;width:52px;font-size:11px;color:var(--dim);letter-spacing:.06em}
-
 button,.btn{font-family:inherit;font-size:11px;letter-spacing:.12em;text-transform:uppercase;background:transparent;color:var(--txt);
   border:1px solid var(--line-2);border-radius:var(--r);padding:9px 12px;cursor:pointer;transition:.15s}
 button:hover,.btn:hover{border-color:var(--sig);color:var(--sig);background:rgba(95,216,230,.06)}
@@ -71,7 +57,6 @@ button.primary{border-color:var(--sig);background:var(--sig);color:#04171a;font-
 button.primary:hover{background:#93ecf6;color:#04171a}
 .btn{display:block;text-align:center}
 input[type=file]{display:none}
-
 input[type=text],textarea{width:100%;background:#05070a;border:1px solid var(--line);color:var(--txt);font-family:inherit;
   font-size:13px;padding:8px 10px;border-radius:var(--r);outline:none}
 textarea{resize:vertical;min-height:54px;line-height:1.5}
@@ -79,14 +64,12 @@ input[type=text]:focus,textarea:focus{border-color:var(--sig)}
 input[type=color]{-webkit-appearance:none;appearance:none;width:36px;height:26px;padding:0;border:1px solid var(--line-2);background:transparent;cursor:pointer;border-radius:var(--r)}
 input[type=color]::-webkit-color-swatch-wrapper{padding:2px}
 input[type=color]::-webkit-color-swatch{border:0}
-
 .chips{display:flex;flex-wrap:wrap;gap:6px}
 .chips button{padding:7px 9px;font-size:10px}
 .chips button.on{border-color:var(--sig);color:var(--sig);background:rgba(95,216,230,.08)}
 .swatches{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .swatches i{width:20px;height:20px;display:block;cursor:pointer;border:1px solid rgba(255,255,255,.18)}
 .swatches i:hover{outline:1px solid var(--sig);outline-offset:1px}
-
 .list{display:flex;flex-direction:column;gap:5px;margin-bottom:10px}
 .item{display:flex;align-items:center;gap:7px;border:1px solid var(--line);padding:7px 9px;cursor:pointer;background:#05070a}
 .item:hover{border-color:var(--line-2)}
@@ -150,13 +133,14 @@ input[type=color]::-webkit-color-swatch{border:0}
           <textarea id="tText" placeholder="문구를 입력하세요"></textarea>
           <div class="row"><label>정렬</label><div class="chips" id="tAlign"></div></div>
           <div class="row"><label>선</label><div class="chips" id="tDash"></div></div>
-          <p class="note">굵게 하려면 <code>**글자**</code>로 감싸세요. 선(—)은 자동으로 붙습니다. 캔버스에서 끌어 옮기고, 방향키로 미세 조정합니다.</p>
+          <p class="note">굵게 하려면 <code>**글자**</code>로 감싸세요. 선(—)은 자동으로 붙습니다. 정렬을 누르면 좌·중앙·우로 딱 맞춰지고, 그 뒤에 끌어서 옮기거나 방향키로 조정할 수 있습니다.</p>
         </div>
       </div>
 
       <div class="sec">
         <h2>코드네임</h2>
         <input type="text" id="nText" value="CODENAME" maxlength="18">
+        <div class="row"><label>정렬</label><div class="chips" id="nAlign"></div></div>
         <p class="note">폭에 맞춰 자동으로 크기가 조절됩니다.</p>
       </div>
 
@@ -173,25 +157,27 @@ input[type=color]::-webkit-color-swatch{border:0}
 (() => {
 "use strict";
 
-/* ---------- 고정 스타일 값 (사용자 변경 불가) ---------- */
+/* ---------- 고정 스타일 값 ---------- */
 const DW = 900;
-const CAP = { size: 22, sp: 2, lh: 1.55, color: "#ffffff", op: 1 };
-const TTL = { font: "Quantico", max: 132, sp: 0.13, wx: 0.76, color: "#ffffff", op: 1, maxW: 0.82 };
-const GRAD = { h: 0.30, a: 1, top: 0.30 };
+const CAP = { size:22, sp:2, lh:1.55, color:"#ffffff", op:1 };
+const TTL = { font:"Quantico", max:132, sp:0.13, wx:0.76, color:"#ffffff", op:1, maxW:0.84 };
+const GRAD = { h:0.30, a:1, top:0.30 };
 const SHADOW = 0.55;
 const EXPORT_SCALE = 2;
 const CAP_FONT = '"Noto Sans KR","Chakra Petch",sans-serif';
-const RATIOS = [["2:3", 2/3], ["3:4", 3/4], ["4:5", 4/5], ["1:1", 1]];
+const RATIOS = [["2:3",2/3],["3:4",3/4],["4:5",4/5],["1:1",1]];
+const PAD = 20;                       // 프레임 안쪽 여백(글자가 절대 벗어나지 않음)
+const MARGIN = { left:0.075, center:0.5, right:0.925 };
 
 let DH = Math.round(DW / RATIOS[0][1]);
 
 const S = {
-  img: null,
-  view: { s:1, x:0, y:0 },
-  texts: [],
-  title: { text:"CODENAME", x:0.5, y:0.855 },
-  gradColor: "#8d97a2",
-  sel: null
+  img:null,
+  view:{ s:1, x:0, y:0 },
+  texts:[],
+  title:{ text:"CODENAME", x:0.5, y:0.855, align:"center" },
+  gradColor:"#8d97a2",
+  sel:null
 };
 let uid = 1;
 
@@ -199,7 +185,7 @@ const cv = document.getElementById("cv");
 const ctx = cv.getContext("2d");
 const $ = id => document.getElementById(id);
 
-/* ---------- 텍스트 ---------- */
+/* ---------- 텍스트 측정 / 그리기 ---------- */
 function segsOf(t){
   const p = String(t).split("**"), out = [];
   p.forEach((s,i) => { if (s !== "") out.push({ t:s, b:i%2===1 }); });
@@ -218,35 +204,55 @@ function measureLine(c, line, size, sp, fam){
   if (chars.length) w -= sp;
   return { w, chars };
 }
-function drawBlock(c, o){
+// 배치만 계산 (그리지 않음)
+function layout(c, o){
   const lines = String(o.text).split("\n");
-  const { fam, sp, size, align } = o, wx = o.wx || 1, lh = size * o.lh;
-  const m = lines.map(l => measureLine(c, l, size, sp, fam));
+  const m = lines.map(l => measureLine(c, l, o.size, o.sp, o.fam));
+  const wx = o.wx || 1, lh = o.size * o.lh;
   const maxW = Math.max(0, ...m.map(x => x.w)) * wx;
+  const h = (lines.length - 1) * lh + o.size * 1.16;
   const ax = o.x * DW, ay = o.y * DH;
-
+  let bx = ax;
+  if (o.align === "center") bx = ax - maxW/2;
+  else if (o.align === "right") bx = ax - maxW;
+  return { m, wx, lh, maxW, h, bb:{ x:bx, y:ay, w:maxW, h } };
+}
+// 프레임 밖으로 나가지 않도록 보정 (겹침·잘림 방지)
+function clampInside(o, L){
+  let dx = 0, dy = 0;
+  const b = L.bb;
+  if (b.w <= DW - PAD*2){
+    if (b.x < PAD) dx = PAD - b.x;
+    else if (b.x + b.w > DW - PAD) dx = (DW - PAD) - (b.x + b.w);
+  }
+  if (b.h <= DH - PAD*2){
+    if (b.y < PAD) dy = PAD - b.y;
+    else if (b.y + b.h > DH - PAD) dy = (DH - PAD) - (b.y + b.h);
+  }
+  if (dx || dy){
+    o.x += dx / DW; o.y += dy / DH;
+    b.x += dx; b.y += dy;
+  }
+  return L;
+}
+function paint(c, o, L){
+  const ax = o.x * DW, ay = o.y * DH;
   c.save();
   c.globalAlpha = o.op; c.fillStyle = o.color; c.textBaseline = "top";
   c.shadowColor = `rgba(0,0,0,${SHADOW})`;
-  c.shadowBlur = size * 0.5; c.shadowOffsetY = size * 0.04;
-  m.forEach((ln,i) => {
-    const lw = ln.w * wx;
+  c.shadowBlur = o.size * 0.5; c.shadowOffsetY = o.size * 0.04;
+  L.m.forEach((ln,i) => {
+    const lw = ln.w * L.wx;
     let lx = ax;
-    if (align === "center") lx = ax - lw/2;
-    else if (align === "right") lx = ax - lw;
-    c.save(); c.translate(lx, ay + i*lh); c.scale(wx, 1);
+    if (o.align === "center") lx = ax - lw/2;
+    else if (o.align === "right") lx = ax - lw;
+    c.save(); c.translate(lx, ay + i*L.lh); c.scale(L.wx, 1);
     let cur = 0;
-    ln.chars.forEach(ch => { c.font = `${ch.b?700:400} ${size}px ${fam}`; c.fillText(ch.ch, cur, 0); cur += ch.w + sp; });
+    ln.chars.forEach(ch => { c.font = `${ch.b?700:400} ${o.size}px ${o.fam}`; c.fillText(ch.ch, cur, 0); cur += ch.w + o.sp; });
     c.restore();
   });
   c.restore();
-
-  let bx = ax;
-  if (align === "center") bx = ax - maxW/2;
-  else if (align === "right") bx = ax - maxW;
-  return { x:bx, y:ay, w:maxW, h:(lines.length-1)*lh + size*1.15 };
 }
-// 선(—) 자동 부착
 function bodyOf(t){
   const lines = String(t.text).split("\n");
   if (t.dash === "pre") lines[0] = "— " + lines[0];
@@ -279,14 +285,13 @@ function hexToRgb(h){
   return m ? [parseInt(m[1],16),parseInt(m[2],16),parseInt(m[3],16)] : [0,0,0];
 }
 function draw(c, preview){
+  c.save();
+  c.beginPath(); c.rect(0,0,DW,DH); c.clip();   // 프레임 밖으로 새는 픽셀 차단
   c.clearRect(0,0,DW,DH);
   c.fillStyle = "#0a0b0d"; c.fillRect(0,0,DW,DH);
 
   if (S.img){
-    c.save(); c.beginPath(); c.rect(0,0,DW,DH); c.clip();
-    c.imageSmoothingQuality = "high";
     c.drawImage(S.img, S.view.x, S.view.y, S.img.naturalWidth*S.view.s, S.img.naturalHeight*S.view.s);
-    c.restore();
   } else {
     c.save();
     c.fillStyle = "#2b323b"; c.textAlign = "center"; c.textBaseline = "middle";
@@ -296,41 +301,50 @@ function draw(c, preview){
   }
 
   const gt = c.createLinearGradient(0,0,0,DH*0.55);
-  gt.addColorStop(0, `rgba(0,0,0,${GRAD.top})`); gt.addColorStop(1, "rgba(0,0,0,0)");
+  gt.addColorStop(0, `rgba(0,0,0,${GRAD.top})`); gt.addColorStop(1,"rgba(0,0,0,0)");
   c.fillStyle = gt; c.fillRect(0,0,DW,DH*0.55);
 
   const [r,g,b] = hexToRgb(S.gradColor);
-  const top = DH*(1-GRAD.h);
+  const top = Math.floor(DH*(1-GRAD.h));
   const gb = c.createLinearGradient(0, top, 0, DH);
   gb.addColorStop(0, `rgba(${r},${g},${b},0)`);
   gb.addColorStop(0.55, `rgba(${r},${g},${b},${GRAD.a*0.55})`);
   gb.addColorStop(1, `rgba(${r},${g},${b},${GRAD.a})`);
-  c.fillStyle = gb; c.fillRect(0, top, DW, DH-top);
+  c.fillStyle = gb; c.fillRect(0, top, DW, DH-top+2);
+  c.fillStyle = `rgba(${r},${g},${b},${GRAD.a})`; c.fillRect(0, DH-2, DW, 4); // 아래 끝 잘림 방지
 
   S.texts.forEach(t => {
-    t._bb = drawBlock(c, { text:bodyOf(t), x:t.x, y:t.y, size:CAP.size, sp:CAP.sp, lh:CAP.lh,
-      align:t.align, color:CAP.color, op:CAP.op, fam:CAP_FONT, wx:1 });
+    const o = { text:bodyOf(t), x:t.x, y:t.y, size:CAP.size, sp:CAP.sp, lh:CAP.lh,
+      align:t.align, color:CAP.color, op:CAP.op, fam:CAP_FONT, wx:1 };
+    const L = clampInside(o, layout(c, o));
+    t.x = o.x; t.y = o.y; t._bb = L.bb;
+    paint(c, o, L);
   });
 
   const T = S.title;
-  if (T.text.trim()){
+  const ttl = T.text.replace(/\s+/g," ").trim();
+  if (ttl){
     let size = TTL.max, sp = TTL.max*TTL.sp;
-    const probe = () => measureLine(c, T.text, size, sp, `"${TTL.font}",${CAP_FONT}`).w * TTL.wx;
-    let w = probe(), guard = 0;
-    while (w > DW*TTL.maxW && size > 16 && guard++ < 60){
-      size *= Math.min(0.97, (DW*TTL.maxW)/w); sp = size*TTL.sp; w = probe();
+    const fam = `"${TTL.font}",${CAP_FONT}`;
+    const wOf = () => measureLine(c, ttl, size, sp, fam).w * TTL.wx;
+    let w = wOf(), guard = 0;
+    while (w > DW*TTL.maxW && size > 16 && guard++ < 80){
+      size *= Math.min(0.97, (DW*TTL.maxW)/w); sp = size*TTL.sp; w = wOf();
     }
-    T._bb = drawBlock(c, { text:T.text, x:T.x, y:T.y, size, sp, lh:1.1,
-      align:"center", color:TTL.color, op:TTL.op, fam:`"${TTL.font}",${CAP_FONT}`, wx:TTL.wx });
+    const o = { text:ttl, x:T.x, y:T.y, size, sp, lh:1.1, align:T.align, color:TTL.color, op:TTL.op, fam, wx:TTL.wx };
+    const L = clampInside(o, layout(c, o));
+    T.x = o.x; T.y = o.y; T._bb = L.bb;
+    paint(c, o, L);
   } else T._bb = null;
 
-  if (preview && S.sel){
+  if (preview && S.sel !== null){
     const o = S.sel === "title" ? T : S.texts.find(t => t.id === S.sel);
     if (o && o._bb){
       c.save(); c.strokeStyle = "#5fd8e6"; c.lineWidth = 1.2; c.setLineDash([6,5]);
       c.strokeRect(o._bb.x-8, o._bb.y-8, o._bb.w+16, o._bb.h+16); c.restore();
     }
   }
+  c.restore();
 }
 function render(){
   const k = 2;
@@ -373,11 +387,11 @@ cv.addEventListener("pointerdown", e => {
   const p = toDesign(e);
   if (ptrs.size === 2){
     const [a,b] = [...ptrs.values()];
-    pinch = { d: Math.hypot(a.clientX-b.clientX, a.clientY-b.clientY), s: S.view.s };
+    pinch = { d:Math.hypot(a.clientX-b.clientX, a.clientY-b.clientY), s:S.view.s };
     mode = "pinch"; return;
   }
   const h = hit(p);
-  if (h){ selectItem(h); mode = "text"; } else { mode = "pan"; cv.classList.add("grabbing"); }
+  if (h !== null){ selectItem(h); mode = "text"; } else { mode = "pan"; cv.classList.add("grabbing"); }
   last = p;
 });
 cv.addEventListener("pointermove", e => {
@@ -393,9 +407,9 @@ cv.addEventListener("pointermove", e => {
   }
   const p = toDesign(e), dx = p.x-last.x, dy = p.y-last.y;
   if (mode === "pan" && S.img){ S.view.x += dx; S.view.y += dy; clampView(); render(); }
-  else if (mode === "text" && S.sel){
+  else if (mode === "text" && S.sel !== null){
     const o = S.sel === "title" ? S.title : S.texts.find(t => t.id === S.sel);
-    if (o){ o.x = Math.max(-.1, Math.min(1.1, o.x+dx/DW)); o.y = Math.max(-.1, Math.min(1.1, o.y+dy/DH)); render(); }
+    if (o){ o.x += dx/DW; o.y += dy/DH; render(); }
   }
   last = p;
 });
@@ -412,7 +426,7 @@ function zoomAt(p, k){
 }
 cv.addEventListener("wheel", e => { e.preventDefault(); zoomAt(toDesign(e), Math.exp(-e.deltaY*0.0016)); }, { passive:false });
 window.addEventListener("keydown", e => {
-  if (!S.sel || /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) return;
+  if (S.sel === null || /^(INPUT|TEXTAREA|SELECT)$/.test(document.activeElement.tagName)) return;
   const map = { ArrowLeft:[-1,0], ArrowRight:[1,0], ArrowUp:[0,-1], ArrowDown:[0,1] };
   if (!map[e.key]) return;
   const step = e.shiftKey ? 10 : 1;
@@ -452,6 +466,7 @@ function syncText(){
   document.querySelectorAll("#tAlign button").forEach(b => { b.disabled = !on; b.classList.toggle("on", on && b.dataset.v === t.align); });
   document.querySelectorAll("#tDash button").forEach(b => { b.disabled = !on; b.classList.toggle("on", on && b.dataset.v === t.dash); });
   $("tText").value = on ? t.text : "";
+  document.querySelectorAll("#nAlign button").forEach(b => b.classList.toggle("on", b.dataset.v === S.title.align));
 }
 
 /* ---------- 컨트롤 ---------- */
@@ -470,11 +485,21 @@ RATIOS.forEach(([name,r], i) => {
 });
 cv.style.aspectRatio = `${DW} / ${DH}`;
 
-[["왼쪽","left"],["가운데","center"],["오른쪽","right"]].forEach(([n,v]) => {
+const ALIGNS = [["왼쪽","left"],["중앙","center"],["오른쪽","right"]];
+ALIGNS.forEach(([n,v]) => {
   const b = document.createElement("button");
   b.textContent = n; b.dataset.v = v;
-  b.onclick = () => { const t = S.texts.find(x => x.id === S.sel); if (!t) return; t.align = v; syncText(); render(); };
+  b.onclick = () => {
+    const t = S.texts.find(x => x.id === S.sel); if (!t) return;
+    t.align = v; t.x = MARGIN[v]; syncText(); render();
+  };
   $("tAlign").appendChild(b);
+});
+ALIGNS.forEach(([n,v]) => {
+  const b = document.createElement("button");
+  b.textContent = n; b.dataset.v = v;
+  b.onclick = () => { S.title.align = v; S.title.x = MARGIN[v]; syncText(); render(); };
+  $("nAlign").appendChild(b);
 });
 [["앞","pre"],["뒤","post"],["없음","none"]].forEach(([n,v]) => {
   const b = document.createElement("button");
@@ -483,7 +508,7 @@ cv.style.aspectRatio = `${DW} / ${DH}`;
   $("tDash").appendChild(b);
 });
 
-$("btnAdd").onclick = () => { addText("문구를 **입력**하세요", 0.08, 0.32, "left", "post"); };
+$("btnAdd").onclick = () => addText("문구를 **입력**하세요", MARGIN.left, 0.32, "left", "post");
 $("btnDel").onclick = () => { if (S.sel !== null && S.sel !== "title") delText(S.sel); };
 $("btnFit").onclick = fitCover;
 $("btnDeselect").onclick = () => selectItem(null);
@@ -503,7 +528,11 @@ $("gHex").addEventListener("change", e => {
   $("gSwatch").appendChild(i);
 });
 
-$("nText").addEventListener("input", e => { S.title.text = e.target.value; render(); });
+$("nText").addEventListener("input", e => {
+  const v = e.target.value.replace(/[\r\n\t]+/g," ");
+  if (v !== e.target.value) e.target.value = v;
+  S.title.text = v; render();
+});
 
 $("btnSave").onclick = () => {
   const m = EXPORT_SCALE;
@@ -521,13 +550,13 @@ $("btnSave").onclick = () => {
 };
 
 /* ---------- 시작 ---------- */
-addText("소속, **직급**", 0.08, 0.225, "left", "post");
-addText("한 줄 **소개**", 0.92, 0.135, "right", "pre");
+addText("소속, **직급**", MARGIN.left, 0.225, "left", "post");
+addText("한 줄 **소개**", MARGIN.right, 0.135, "right", "pre");
 selectItem(S.texts[0].id);
 render();
 (document.fonts ? document.fonts.ready : Promise.resolve())
   .then(() => Promise.all([
-    document.fonts.load('700 100px "Quantico"'),
+    document.fonts.load('700 132px "Quantico"'),
     document.fonts.load('400 30px "Noto Sans KR"'),
     document.fonts.load('700 30px "Noto Sans KR"')
   ]).catch(() => {}))
