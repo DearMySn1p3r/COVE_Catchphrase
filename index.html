@@ -180,6 +180,28 @@ button.primary:hover{color:#0b0b10;filter:brightness(1.06);background:linear-gra
 .prog i{display:block;height:100%;width:0;background:var(--ac);transition:width .15s}
 .foot .note{text-align:center;color:var(--dim-2)}
 
+/* 카드 위 바로 수정 */
+.ied{position:absolute;z-index:3;display:none;resize:none;overflow:hidden;white-space:pre;color:#fff;
+  background:rgba(8,9,12,.96);border:1px solid var(--ac);border-radius:4px;outline:none;padding:3px 6px;
+  box-shadow:0 0 0 4px color-mix(in srgb,var(--ac) 22%,transparent),0 10px 30px rgba(0,0,0,.5);caret-color:var(--ac)}
+.ied.show{display:block}
+.ihint{position:absolute;z-index:3;display:none;transform:translateY(6px);font-size:10.5px;font-weight:500;color:var(--bright);
+  background:rgba(14,15,19,.92);border:1px solid var(--line-2);border-radius:6px;padding:4px 8px;white-space:nowrap;pointer-events:none}
+.ihint.show{display:block}
+.ihint kbd{font-family:inherit;font-weight:600;color:var(--ac)}
+.stagebar .play{color:var(--bright);background:color-mix(in srgb,var(--ac) 16%,transparent)}
+.stagebar .play:hover{background:color-mix(in srgb,var(--ac) 26%,transparent)}
+.stagebar .play svg{width:12px;height:12px}
+.fxgrid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px}
+.fxgrid button{flex-direction:column;gap:6px;padding:10px 0 8px;font-size:10.5px;font-weight:600;color:var(--dim);background:var(--card);border-color:var(--line);border-radius:var(--r)}
+.fxgrid button .g{font-family:"Quantico",monospace;font-size:13px;font-weight:700;color:var(--txt);height:16px;line-height:16px}
+.fxgrid button.on{border-color:color-mix(in srgb,var(--ac) 65%,transparent);background:color-mix(in srgb,var(--ac) 9%,var(--card));color:var(--bright)}
+.fxgrid button.on .g{color:var(--ac)}
+.opt3{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.opt3 .sub-l{margin-top:12px}
+.fxonly{transition:opacity .2s}
+.fxonly.off{opacity:.35;pointer-events:none}
+
 /* ───────── 입장 후 앱 등장 ───────── */
 body.pre header,body.pre .frame,body.pre .stagebar,body.pre .sec,body.pre .foot{opacity:0}
 body.pre header{transform:translateY(-10px)}
@@ -275,15 +297,18 @@ body.entered .sheen::after{animation:sweep 1.4s .55s var(--ease) both}
 
   <main>
     <section class="stage" id="stage">
-      <div class="frame"><canvas id="cv"></canvas><div class="sheen"></div></div>
+      <div class="frame" id="frame">
+        <canvas id="cv"></canvas><div class="sheen"></div>
+        <textarea class="ied" id="ied" spellcheck="false" rows="1"></textarea>
+        <div class="ihint" id="ihint"></div>
+      </div>
       <div class="stagebar" id="stagebar">
         <button id="btnFit" title="사진을 프레임에 꽉 맞춤"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>사진 맞춤</button>
         <button id="btnDeselect" title="선택 해제 (Esc)"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2" stroke-dasharray="3 3"/></svg>선택 해제</button>
         <span class="gifctl">
           <span class="sep"></span>
-          <button id="btnPlay" title="재생 / 일시정지"><svg id="icPlay" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l11-7z"/></svg></button>
-          <span class="fc" id="fc">1 / 1</span>
-          <span class="badge">GIF</span>
+          <button id="btnPlay" class="play" title="애니메이션 미리보기 (Space)"><svg id="icPlay" viewBox="0 0 24 24" fill="currentColor"><path d="M7 5v14l11-7z"/></svg><span id="playLbl">미리보기</span></button>
+          <span class="fc" id="fc">0.0s</span>
         </span>
       </div>
       <div class="drop"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15V3M7 8l5-5 5 5"/><path d="M4 15v4a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-4"/></svg>이미지를 놓으세요</div>
@@ -296,7 +321,7 @@ body.entered .sheen::after{animation:sweep 1.4s .55s var(--ease) both}
           <h2><em>01</em>이미지</h2>
           <label class="btn upload" for="file">
             <span class="ico"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.8"/><path d="m21 16-5-5-9 9"/></svg></span>
-            <span><b>이미지 열기</b><span>JPG · PNG · 움직이는 GIF · 드래그 · Ctrl+V</span></span>
+            <span><b>이미지 열기</b><span>카드 빈 곳 더블클릭 · 드래그 · Ctrl+V</span></span>
           </label>
           <input type="file" id="file" accept="image/*">
           <span class="sub-l">비율</span>
@@ -325,7 +350,7 @@ body.entered .sheen::after{animation:sweep 1.4s .55s var(--ease) both}
             <div><span class="sub-l">정렬</span><div class="seg" id="tAlign"></div></div>
             <div><span class="sub-l">선 (—)</span><div class="seg" id="tDash"></div></div>
           </div>
-          <p class="note"><code>**글자**</code>로 감싸면 굵게 나옵니다. 정렬을 누르면 좌·중앙·우 기준선에 딱 맞고, 그 뒤 카드 위에서 끌어 옮길 수 있어요.</p>
+          <p class="note"><code>**글자**</code>로 감싸면 굵게 나옵니다. 카드 위 글자를 <b>클릭</b>하면 그 자리에서 바로 고칠 수 있고, <b>끌면</b> 옮겨져요.</p>
         </div>
 
         <div class="sec">
@@ -333,21 +358,41 @@ body.entered .sheen::after{animation:sweep 1.4s .55s var(--ease) both}
           <label class="field"><span>Codename</span><input type="text" id="nText" value="CODENAME" maxlength="18"></label>
           <span class="sub-l">정렬</span>
           <div class="seg" id="nAlign"></div>
-          <div class="keys"><span><kbd>드래그</kbd>글자·사진 이동</span><span><kbd>휠</kbd>확대</span><span><kbd>↑↓←→</kbd>미세 이동 (Shift ×10)</span><span><kbd>Del</kbd>문구 삭제</span><span><kbd>Esc</kbd>선택 해제</span></div>
+        </div>
+
+        <div class="sec">
+          <h2><em>05</em>글씨 애니메이션<small>GIF</small></h2>
+          <div class="fxgrid" id="fxGrid"></div>
+          <div class="fxonly" id="fxOpts">
+            <div class="opt3">
+              <div><span class="sub-l">속도</span><div class="seg" id="fxSpeed"></div></div>
+              <div><span class="sub-l">끝에 멈춤</span><div class="seg" id="fxHold"></div></div>
+            </div>
+            <div class="opt3">
+              <div><span class="sub-l">순서</span><div class="seg" id="fxOrder"></div></div>
+              <div><span class="sub-l">배경</span><div class="seg" id="fxBg"></div></div>
+            </div>
+          </div>
+          <p class="note">문구가 목록 순서대로 하나씩 나타나요. 카드 아래 <b>미리보기</b>로 확인하고 <b>GIF 저장</b>을 누르세요.</p>
+          <div class="keys"><span><kbd>클릭</kbd>글자 수정</span><span><kbd>드래그</kbd>이동</span><span><kbd>휠</kbd>확대</span><span><kbd>Space</kbd>미리보기</span><span><kbd>Del</kbd>문구 삭제</span><span><kbd>Esc</kbd>선택 해제</span></div>
         </div>
       </div>
 
       <div class="foot">
         <div class="saves">
           <button id="btnSave" class="primary"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12M7 10l5 5 5-5"/><path d="M4 17v2a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2"/></svg>PNG 저장</button>
-          <button id="btnGif" disabled title="움직이는 GIF를 열면 사용할 수 있어요"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4-2.5z" fill="currentColor"/></svg><span id="gifLbl">GIF 저장</span></button>
+          <button id="btnGif"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="3"/><path d="M10 9.5v5l4-2.5z" fill="currentColor"/></svg><span id="gifLbl">GIF 저장</span></button>
         </div>
-        <div class="gifopt" id="gifopt">
-          <div class="lbl">GIF 크기<i id="gifInfo"></i></div>
-          <div class="seg" id="gifSize"></div>
+        <div class="gifopt show" id="gifopt">
+          <div class="lbl">GIF 화질<i id="qInfo"></i></div>
+          <div class="seg" id="gifQ" style="margin-bottom:10px"></div>
+          <div class="opt3">
+            <div><div class="lbl">GIF 크기</div><div class="seg" id="gifSize"></div></div>
+            <div><div class="lbl">부드러움<i id="gifInfo"></i></div><div class="seg" id="gifFps"></div></div>
+          </div>
         </div>
         <div class="prog" id="prog"><i></i></div>
-        <p class="note" id="footNote">PNG는 1800px 폭 · 움직이는 GIF를 열면 GIF로도 저장돼요</p>
+        <p class="note" id="footNote">PNG는 1800px 폭 · GIF는 글씨 애니메이션이 들어가요</p>
       </div>
     </aside>
   </main>
@@ -366,24 +411,39 @@ const GRAD = { h:0.30, a:1, top:0.30 };
 const SHADOW = 0.55;
 const EXPORT_SCALE = 2;
 const CAP_FONT = '"Noto Sans KR","Chakra Petch",sans-serif';
+const TTL_FAM = `"${TTL.font}",${CAP_FONT}`;
 const RATIOS = [["2:3",2/3],["3:4",3/4],["4:5",4/5],["1:1",1]];
 const PAD = 20;
 const MARGIN = { left:0.075, center:0.5, right:0.925 };
 const SEL_COLOR = "#a48fe0";
+const MAX_GIF_PIXELS = 80e6;
+const GLYPHS = "ABCDEFGHJKLMNPQRSTUVWXYZ0123456789#%&*+=/<>?";
+
+const FX_TYPES = [["없음","none","Aa"],["디코드","decode","#?A"],["타자기","type","A▍"],["페이드","fade","A↑"],["와이프","wipe","A|"]];
+const FX_SPEED = [["느리게",1.5],["보통",1],["빠르게",0.65]];
+const FX_HOLD  = [["1초",1000],["2초",2000],["3초",3000]];
+const FX_ORDER = [["문구 먼저","seq"],["이름 먼저","title"]];
+const FX_BG    = [["고정","none"],["줌","zoom"],["페이드","fade"]];
 const GIF_SIZES = [["작게",450],["보통",600],["크게",900]];
-const MAX_GIF_PIXELS = 80e6;          // 디코딩한 프레임 총 픽셀 상한 (메모리 보호)
+const GIF_FPS   = [["보통",60],["부드럽게",40]];
+const GIF_Q = {
+  low:  { label:"저화질", colors:96,  dither:0,    step:6, picks:3, local:false, info:"가볍게 · 색 단순" },
+  mid:  { label:"표준",   colors:255, dither:0.6,  step:2, picks:6, local:false, info:"선명 · 적당한 용량" },
+  high: { label:"고화질", colors:255, dither:0.9,  step:1, picks:8, local:true,  info:"가장 선명 · 용량 큼" }
+};
 
 let DH = Math.round(DW / RATIOS[0][1]);
 
 const S = {
-  src:null,                 // { w, h, frames:[{c, delay}], anim }
-  fi:0, playing:true,
+  src:null,                 // { w, h, frames:[{c, delay}], anim, dur }
   view:{ s:1, x:0, y:0 },
   texts:[],
   title:{ text:"CODENAME", x:0.5, y:0.855, align:"center" },
   gradColor:"#8d97a2",
-  sel:null,
-  gifW:600, busy:false
+  sel:null, editing:null,
+  fx:{ type:"decode", speed:1, hold:2000, order:"seq", bg:"none" },
+  clock:0, playing:false,
+  gifW:600, gifDt:60, gifQ:"mid", busy:false
 };
 let uid = 1;
 
@@ -396,6 +456,16 @@ let toastT = 0;
 function toast(msg){
   const t = $("toast"); t.textContent = msg; t.classList.add("show");
   clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove("show"), 2600);
+}
+
+/* ---------- 이징 / 해시 ---------- */
+const clamp01 = v => Math.max(0, Math.min(1, v));
+const easeOut = p => 1 - Math.pow(1-p, 3);
+const easeInOut = p => p < .5 ? 4*p*p*p : 1 - Math.pow(-2*p+2, 3)/2;
+function hash(a, b){
+  let h = (Math.imul(a|0, 374761393) + Math.imul(b|0, 668265263)) >>> 0;
+  h = Math.imul(h ^ (h >>> 13), 1274126177) >>> 0;
+  return (h ^ (h >>> 16)) >>> 0;
 }
 
 /* ---------- 텍스트 측정 / 그리기 ---------- */
@@ -435,7 +505,7 @@ function clampInside(o, L){
   if (b.w <= DW - PAD*2){
     if (b.x < PAD) dx = PAD - b.x;
     else if (b.x + b.w > DW - PAD) dx = (DW - PAD) - (b.x + b.w);
-  } else dx = (DW - b.w)/2 - b.x;               // 너무 넓으면 가운데로
+  } else dx = (DW - b.w)/2 - b.x;
   if (b.h <= DH - PAD*2){
     if (b.y < PAD) dy = PAD - b.y;
     else if (b.y + b.h > DH - PAD) dy = (DH - PAD) - (b.y + b.h);
@@ -446,20 +516,48 @@ function clampInside(o, L){
   }
   return L;
 }
-function paint(c, o, L){
-  const ax = o.x * DW, ay = o.y * DH;
+/* a = { fx, p, tick, seed } — 애니메이션 상태 (없으면 완성본) */
+function paint(c, o, L, a){
+  let alpha = 1, dy = 0, show = Infinity, scr = 0, wipe = null, cursor = false;
+  if (a && a.fx !== "none"){
+    const p = a.p;
+    if (p <= 0) return;
+    const total = L.m.reduce((s, ln) => s + ln.chars.length, 0);
+    if (a.fx === "fade"){ const e = easeOut(p); alpha = e; dy = (1-e) * o.size * 0.55; }
+    else if (a.fx === "type"){ show = p >= 1 ? total : Math.ceil(total * p); cursor = p < 1; }
+    else if (a.fx === "decode"){ show = p >= 1 ? total : Math.floor(total * p); scr = p < 1 ? Math.min(total - show, 5) : 0; alpha = Math.min(1, p * 6); }
+    else if (a.fx === "wipe"){ wipe = easeInOut(p); }
+  }
+  const ax = o.x * DW, ay = o.y * DH + dy;
   c.save();
-  c.globalAlpha = o.op; c.fillStyle = o.color; c.textBaseline = "top";
+  if (wipe !== null && wipe < 1){
+    c.beginPath(); c.rect(L.bb.x - 40, L.bb.y - 40, (L.bb.w + 80) * wipe, L.bb.h + 80); c.clip();
+  }
+  c.globalAlpha = o.op * alpha; c.fillStyle = o.color; c.textBaseline = "top";
   c.shadowColor = `rgba(0,0,0,${SHADOW})`;
   c.shadowBlur = o.size * 0.5; c.shadowOffsetY = o.size * 0.04;
-  L.m.forEach((ln,i) => {
+  let gi = 0;
+  L.m.forEach((ln, i) => {
     const lw = ln.w * L.wx;
     let lx = ax;
     if (o.align === "center") lx = ax - lw/2;
     else if (o.align === "right") lx = ax - lw;
     c.save(); c.translate(lx, ay + i*L.lh); c.scale(L.wx, 1);
     let cur = 0;
-    ln.chars.forEach(ch => { c.font = `${ch.b?700:400} ${o.size}px ${o.fam}`; c.fillText(ch.ch, cur, 0); cur += ch.w + o.sp; });
+    ln.chars.forEach(ch => {
+      c.font = `${ch.b?700:400} ${o.size}px ${o.fam}`;
+      if (gi < show) c.fillText(ch.ch, cur, 0);
+      else if (gi < show + scr){
+        const g = GLYPHS[hash(a.tick, gi * 31 + a.seed) % GLYPHS.length];
+        c.globalAlpha = o.op * alpha * 0.7;
+        c.fillText(g, cur, 0);
+        c.globalAlpha = o.op * alpha;
+      }
+      if (cursor && gi === show - 1){
+        c.fillRect(cur + ch.w + Math.max(1, o.sp*0.5), o.size*0.08, Math.max(2, o.size*0.09), o.size*0.98);
+      }
+      cur += ch.w + o.sp; gi++;
+    });
     c.restore();
   });
   c.restore();
@@ -470,6 +568,44 @@ function bodyOf(t){
   else if (t.dash === "post") lines[lines.length-1] = lines[lines.length-1] + " —";
   return lines.join("\n");
 }
+const titleText = () => S.title.text.replace(/\s+/g," ").trim();
+
+/* ---------- 애니메이션 타임라인 ---------- */
+const charCount = s => Array.from(String(s).replace(/\*\*/g,"").replace(/\n/g,"")).length;
+function fxDur(n){
+  const k = S.fx.speed;
+  switch (S.fx.type){
+    case "type":   return (n*55 + 150) * k;
+    case "decode": return (n*42 + 450) * k;
+    case "fade":   return 750 * k;
+    case "wipe":   return 850 * k;
+  }
+  return 0;
+}
+function timeline(){
+  const els = S.texts.map(t => ({ key:t.id, n:charCount(bodyOf(t)) }));
+  const ti = { key:"title", n:charCount(titleText()) };
+  const seq = S.fx.order === "title" ? [ti, ...els] : [...els, ti];
+  const map = new Map(); let t = 300, end = 300;
+  seq.forEach(e => {
+    if (!e.n){ map.set(e.key, { s:t, d:1 }); return; }
+    const d = fxDur(e.n);
+    map.set(e.key, { s:t, d });
+    end = Math.max(end, t + d);
+    t += d * (S.fx.type === "type" ? 0.92 : 0.55);
+  });
+  const animEnd = Math.round(end + 80);
+  return { map, animEnd, total: animEnd + S.fx.hold };
+}
+const textAnimOn = () => S.fx.type !== "none";
+const hasAnim = () => textAnimOn() || !!(S.src && S.src.anim);
+function frameAt(ms){
+  if (!S.src || !S.src.anim) return 0;
+  const fr = S.src.frames; let t = ((ms % S.src.dur) + S.src.dur) % S.src.dur;
+  for (let i = 0; i < fr.length; i++){ if (t < fr[i].delay) return i; t -= fr[i].delay; }
+  return fr.length - 1;
+}
+const cycleLen = () => textAnimOn() ? timeline().total : (S.src && S.src.anim ? S.src.dur : 0);
 
 /* ---------- 뷰 ---------- */
 const minScale = () => S.src ? Math.max(DW/S.src.w, DH/S.src.h) : 1;
@@ -495,21 +631,33 @@ function hexToRgb(h){
   const m = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(String(h).trim());
   return m ? [parseInt(m[1],16),parseInt(m[2],16),parseInt(m[3],16)] : [0,0,0];
 }
-function draw(c, preview, fi){
+/* t: 애니메이션 시각(ms) · null이면 완성본 / fi: 배경 프레임 */
+function draw(c, preview, fi, t){
+  const TL = t == null ? null : timeline();
   c.save();
   c.beginPath(); c.rect(0,0,DW,DH); c.clip();
   c.clearRect(0,0,DW,DH);
   c.fillStyle = "#0a0b0d"; c.fillRect(0,0,DW,DH);
 
   if (S.src){
-    const f = S.src.frames[fi == null ? S.fi : fi] || S.src.frames[0];
+    const f = S.src.frames[fi || 0] || S.src.frames[0];
+    c.save();
+    if (TL && S.fx.bg === "zoom"){
+      const z = 1 + 0.09 * (1 - easeOut(clamp01(t / TL.animEnd)));
+      c.translate(DW/2, DH/2); c.scale(z, z); c.translate(-DW/2, -DH/2);
+    }
     c.imageSmoothingQuality = "high";
     c.drawImage(f.c, S.view.x, S.view.y, S.src.w*S.view.s, S.src.h*S.view.s);
+    c.restore();
+    if (TL && S.fx.bg === "fade"){
+      const k = 1 - easeOut(clamp01(t / 900));
+      if (k > 0){ c.fillStyle = `rgba(0,0,0,${k})`; c.fillRect(0,0,DW,DH); }
+    }
   } else {
     c.save();
     c.fillStyle = "#2b323b"; c.textAlign = "center"; c.textBaseline = "middle";
     c.font = `500 21px ${CAP_FONT}`;
-    c.fillText("이미지를 열거나 여기로 끌어다 놓으세요", DW/2, DH/2);
+    c.fillText("클릭해서 이미지를 열거나 여기로 끌어다 놓으세요", DW/2, DH/2);
     c.restore();
   }
 
@@ -526,32 +674,37 @@ function draw(c, preview, fi){
   c.fillStyle = gb; c.fillRect(0, top, DW, DH-top+2);
   c.fillStyle = `rgba(${r},${g},${b},${GRAD.a})`; c.fillRect(0, DH-2, DW, 4);
 
-  S.texts.forEach(t => {
-    const o = { text:bodyOf(t), x:t.x, y:t.y, size:CAP.size, sp:CAP.sp, lh:CAP.lh,
-      align:t.align, color:CAP.color, op:CAP.op, fam:CAP_FONT, wx:1 };
+  const animOf = (key, seed) => {
+    if (!TL) return null;
+    const e = TL.map.get(key); if (!e) return null;
+    return { fx:S.fx.type, p:clamp01((t - e.s) / e.d), tick:Math.floor(t / 70), seed };
+  };
+
+  S.texts.forEach(tx => {
+    const o = { text:bodyOf(tx), x:tx.x, y:tx.y, size:CAP.size, sp:CAP.sp, lh:CAP.lh,
+      align:tx.align, color:CAP.color, op:CAP.op, fam:CAP_FONT, wx:1 };
     const L = clampInside(o, layout(c, o));
-    t.x = o.x; t.y = o.y; t._bb = L.bb;
-    paint(c, o, L);
+    tx.x = o.x; tx.y = o.y; tx._bb = L.bb;
+    paint(c, o, L, animOf(tx.id, tx.id * 97));
   });
 
   const T = S.title;
-  const ttl = T.text.replace(/\s+/g," ").trim();
+  const ttl = titleText();
   if (ttl){
     let size = TTL.max, sp = TTL.max*TTL.sp;
-    const fam = `"${TTL.font}",${CAP_FONT}`;
-    const wOf = () => measureLine(c, ttl, size, sp, fam).w * TTL.wx;
+    const wOf = () => measureLine(c, ttl, size, sp, TTL_FAM).w * TTL.wx;
     let w = wOf(), guard = 0;
     while (w > DW*TTL.maxW && size > 16 && guard++ < 80){
       size *= Math.min(0.97, (DW*TTL.maxW)/w); sp = size*TTL.sp; w = wOf();
     }
-    const o = { text:ttl, x:T.x, y:T.y, size, sp, lh:1.1, align:T.align, color:TTL.color, op:TTL.op, fam, wx:TTL.wx };
+    const o = { text:ttl, x:T.x, y:T.y, size, sp, lh:1.1, align:T.align, color:TTL.color, op:TTL.op, fam:TTL_FAM, wx:TTL.wx };
     const L = clampInside(o, layout(c, o));
-    T.x = o.x; T.y = o.y; T._bb = L.bb;
-    paint(c, o, L);
+    T.x = o.x; T.y = o.y; T._bb = L.bb; T._size = size; T._sp = sp;
+    paint(c, o, L, animOf("title", 7));
   } else T._bb = null;
 
-  if (preview && S.sel !== null){
-    const o = S.sel === "title" ? T : S.texts.find(t => t.id === S.sel);
+  if (preview && S.sel !== null && S.editing === null && !TL){
+    const o = S.sel === "title" ? T : S.texts.find(x => x.id === S.sel);
     if (o && o._bb){
       c.save(); c.strokeStyle = SEL_COLOR; c.lineWidth = 1.4; c.setLineDash([6,5]);
       c.strokeRect(o._bb.x-8, o._bb.y-8, o._bb.w+16, o._bb.h+16); c.restore();
@@ -561,49 +714,54 @@ function draw(c, preview, fi){
 }
 let raf = 0;
 function paintNow(){
-  raf = 0;
+  cancelAnimationFrame(raf); raf = 0;
   const k = 2;
   if (cv.width !== DW*k || cv.height !== DH*k){ cv.width = DW*k; cv.height = DH*k; }
   ctx.setTransform(k,0,0,k,0,0);
-  draw(ctx, true);
+  const t = S.playing && textAnimOn() ? S.clock : null;
+  draw(ctx, true, frameAt(S.clock), t);
+  if (S.editing !== null) placeEditor();
 }
 function render(){ if (!raf) raf = requestAnimationFrame(paintNow); }
 
-/* ---------- GIF 재생 ---------- */
-let animRaf = 0, animLast = 0, animAcc = 0;
-function updateGifUI(){
-  const anim = !!(S.src && S.src.anim);
-  $("stagebar").classList.toggle("anim", anim);
-  $("gifopt").classList.toggle("show", anim);
-  $("btnGif").disabled = !anim || S.busy;
-  $("btnGif").title = anim ? "움직이는 카드로 저장" : "움직이는 GIF를 열면 사용할 수 있어요";
-  if (anim){
-    $("fc").textContent = `${S.fi+1} / ${S.src.frames.length}`;
-    $("icPlay").innerHTML = S.playing ? '<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>' : '<path d="M7 5v14l11-7z"/>';
-    const total = S.src.frames.reduce((a,f) => a+f.delay, 0);
-    $("gifInfo").textContent = `${S.src.frames.length}프레임 · ${(total/1000).toFixed(1)}초`;
-  }
+/* ---------- 재생 ---------- */
+let loopRaf = 0, lastNow = 0;
+function loop(now){
+  loopRaf = 0;
+  if (!S.playing) return;
+  if (lastNow) S.clock += now - lastNow;
+  lastNow = now;
+  const L = cycleLen(); if (L > 0) S.clock %= L;
+  paintNow(); updateClock();
+  loopRaf = requestAnimationFrame(loop);
 }
-function animTick(t){
-  animRaf = 0;
-  if (!S.src || !S.src.anim || !S.playing) return;
-  if (!animLast) animLast = t;
-  animAcc += t - animLast; animLast = t;
-  let changed = false, guard = 0;
-  while (animAcc >= S.src.frames[S.fi].delay && guard++ < 50){
-    animAcc -= S.src.frames[S.fi].delay;
-    S.fi = (S.fi + 1) % S.src.frames.length; changed = true;
-  }
-  if (changed){ paintNow(); $("fc").textContent = `${S.fi+1} / ${S.src.frames.length}`; }
-  animRaf = requestAnimationFrame(animTick);
+function setPlaying(on, restart){
+  if (restart) S.clock = 0;
+  S.playing = !!on && hasAnim();
+  cancelAnimationFrame(loopRaf); loopRaf = 0; lastNow = 0;
+  if (S.playing && !document.hidden) loopRaf = requestAnimationFrame(loop);
+  else render();
+  updateAnimUI();
 }
-function startAnim(){
-  cancelAnimationFrame(animRaf); animLast = 0; animAcc = 0;
-  if (S.src && S.src.anim && S.playing && !document.hidden) animRaf = requestAnimationFrame(animTick);
-  updateGifUI();
+function pauseTextAnim(){ if (S.playing && textAnimOn()) setPlaying(false); }
+document.addEventListener("visibilitychange", () => { if (S.playing) setPlaying(true); });
+function updateClock(){
+  const L = cycleLen();
+  $("fc").textContent = L ? `${(S.clock/1000).toFixed(1)}s / ${(L/1000).toFixed(1)}s` : "";
 }
-document.addEventListener("visibilitychange", startAnim);
-$("btnPlay").onclick = () => { S.playing = !S.playing; startAnim(); };
+function updateAnimUI(){
+  const any = hasAnim();
+  $("stagebar").classList.toggle("anim", any);
+  $("btnGif").disabled = !any || S.busy;
+  $("btnGif").title = any ? "애니메이션 GIF로 저장" : "글씨 애니메이션을 고르거나 움직이는 GIF를 열면 사용할 수 있어요";
+  $("fxOpts").classList.toggle("off", !textAnimOn());
+  $("icPlay").innerHTML = S.playing ? '<path d="M7 5h4v14H7zM13 5h4v14h-4z"/>' : '<path d="M7 5v14l11-7z"/>';
+  $("playLbl").textContent = S.playing ? "정지" : "미리보기";
+  const L = cycleLen();
+  $("gifInfo").textContent = L ? `${(L/1000).toFixed(1)}초` : "";
+  updateClock();
+}
+$("btnPlay").onclick = () => setPlaying(!S.playing, !S.playing && textAnimOn());
 
 /* ---------- 이미지 입력 ---------- */
 function decodeGif(buf){
@@ -632,14 +790,15 @@ function decodeGif(buf){
     }
     const snap = document.createElement("canvas"); snap.width = W; snap.height = H;
     snap.getContext("2d").drawImage(comp, 0, 0);
-    frames.push({ c:snap, delay: f.delay <= 10 ? 100 : f.delay });   // 브라우저와 동일한 지연 보정
+    frames.push({ c:snap, delay: f.delay <= 10 ? 100 : f.delay });
     prev = f;
   }
-  return { w:W, h:H, frames, anim:frames.length > 1, cut: raw.length > maxF ? raw.length : 0 };
+  return { w:W, h:H, frames, anim:frames.length > 1, dur:frames.reduce((a,f) => a+f.delay, 0), cut: raw.length > maxF ? raw.length : 0 };
 }
 function setSource(src){
-  S.src = src; S.fi = 0; S.playing = true;
-  fitCover(); startAnim();
+  S.src = src;
+  fitCover();
+  setPlaying(src.anim && !textAnimOn() ? true : S.playing, true);
 }
 async function loadFile(f){
   if (!f || !f.type || !f.type.startsWith("image/")){ if (f) toast("이미지 파일만 열 수 있어요"); return; }
@@ -655,12 +814,13 @@ async function loadFile(f){
   const im = new Image();
   im.onload = () => {
     URL.revokeObjectURL(url);
-    setSource({ w:im.naturalWidth, h:im.naturalHeight, frames:[{ c:im, delay:0 }], anim:false });
+    setSource({ w:im.naturalWidth, h:im.naturalHeight, frames:[{ c:im, delay:0 }], anim:false, dur:0 });
   };
   im.onerror = () => { URL.revokeObjectURL(url); toast("이미지를 열지 못했어요"); };
   im.src = url;
 }
 $("file").addEventListener("change", e => { loadFile(e.target.files[0]); e.target.value = ""; });
+const openPicker = () => $("file").click();
 const stage = $("stage");
 let dragDepth = 0;
 const hasFiles = e => e.dataTransfer && [...(e.dataTransfer.types||[])].includes("Files");
@@ -678,6 +838,76 @@ window.addEventListener("paste", e => {
   }
 });
 
+/* ---------- 카드 위에서 바로 수정 ---------- */
+const ied = $("ied"), ihint = $("ihint");
+const editObj = () => S.editing === "title" ? S.title : S.texts.find(t => t.id === S.editing);
+function openEditor(key){
+  pauseTextAnim();
+  if (S.sel !== key) selectItem(key);
+  const o = key === "title" ? S.title : S.texts.find(t => t.id === key);
+  if (!o) return;
+  S.editing = key;
+  const isT = key === "title";
+  ied.value = o.text;
+  ied.maxLength = isT ? 18 : 400;
+  ihint.innerHTML = isT ? "<kbd>Enter</kbd> 완료" : "<kbd>Enter</kbd> 줄바꿈 · <kbd>Ctrl+Enter</kbd> 또는 <kbd>Esc</kbd> 완료";
+  ied.classList.add("show"); ihint.classList.add("show");
+  paintNow();
+  ied.focus();
+  ied.setSelectionRange(ied.value.length, ied.value.length);
+}
+function closeEditor(){
+  if (S.editing === null) return;
+  S.editing = null;
+  ied.classList.remove("show"); ihint.classList.remove("show");
+  syncText(); render();
+}
+function placeEditor(){
+  const o = editObj();
+  if (!o){ closeEditor(); return; }
+  const isT = S.editing === "title";
+  const r = cv.getBoundingClientRect(), fr = $("frame").getBoundingClientRect();
+  const sc = r.width / DW, ox = r.left - fr.left, oy = r.top - fr.top;
+  const size = (isT ? (S.title._size || TTL.max) : CAP.size) * sc;
+  ied.style.fontFamily = isT ? TTL_FAM : CAP_FONT;
+  ied.style.fontWeight = "400";
+  ied.style.fontSize = size + "px";
+  ied.style.letterSpacing = ((isT ? (S.title._sp || 0) * TTL.wx : CAP.sp) * sc) + "px";
+  ied.style.lineHeight = isT ? "1.1" : String(CAP.lh);
+  ied.style.textAlign = o.align;
+  ied.style.width = "10px"; ied.style.height = "10px";
+  const bb = o._bb || { x:o.x*DW, y:o.y*DH, w:0, h:size/sc };
+  const w = Math.min(r.width - 8, Math.max(bb.w*sc + 24, ied.scrollWidth + 6, 140));
+  const h = Math.max(bb.h*sc + 10, ied.scrollHeight + 2);
+  let left = o.align === "center" ? (bb.x + bb.w/2)*sc - w/2 : o.align === "right" ? (bb.x + bb.w)*sc - w + 12 : bb.x*sc - 12;
+  left = Math.max(4, Math.min(r.width - w - 4, left));
+  let top = Math.max(4, Math.min(r.height - h - 4, bb.y*sc - 6));
+  ied.style.width = w + "px"; ied.style.height = h + "px";
+  ied.style.left = (ox + left) + "px"; ied.style.top = (oy + top) + "px";
+  const below = top + h + 30 < r.height;
+  ihint.style.left = (ox + left) + "px";
+  ihint.style.top = (oy + (below ? top + h : top - 34)) + "px";
+}
+ied.addEventListener("input", () => {
+  const o = editObj(); if (!o) return;
+  if (S.editing === "title"){
+    const v = ied.value.replace(/[\r\n\t]+/g, " ");
+    if (v !== ied.value) ied.value = v;
+    o.text = v; $("nText").value = v;
+  } else {
+    o.text = ied.value; $("tText").value = ied.value; drawList();
+  }
+  paintNow();
+});
+ied.addEventListener("keydown", e => {
+  e.stopPropagation();
+  if (e.key === "Escape" || (e.key === "Enter" && (S.editing === "title" || e.ctrlKey || e.metaKey))){
+    e.preventDefault(); ied.blur();
+  }
+});
+ied.addEventListener("blur", closeEditor);
+window.addEventListener("resize", () => { if (S.editing !== null) placeEditor(); });
+
 /* ---------- 포인터 ---------- */
 const toDesign = e => {
   const r = cv.getBoundingClientRect();
@@ -693,18 +923,21 @@ function hit(p){
 }
 const selObj = () => S.sel === "title" ? S.title : S.texts.find(t => t.id === S.sel);
 const ptrs = new Map();
-let mode = null, last = null, pinch = null;
+let mode = null, last = null, pinch = null, down = null;
 cv.addEventListener("pointerdown", e => {
+  if (e.button > 0) return;
+  if (S.playing && textAnimOn()){ setPlaying(false); paintNow(); }   // 완성본에서 편집
   try { cv.setPointerCapture(e.pointerId); } catch(_){}
   ptrs.set(e.pointerId, e);
   if (ptrs.size === 2){
     const [a,b] = [...ptrs.values()];
     pinch = { d:Math.max(1, Math.hypot(a.clientX-b.clientX, a.clientY-b.clientY)), s:S.view.s };
-    mode = "pinch"; return;
+    mode = "pinch"; down = null; return;
   }
   if (ptrs.size > 2) return;
   const p = toDesign(e);
   const h = hit(p);
+  down = { cx:e.clientX, cy:e.clientY, h, moved:false };
   if (h !== null){ if (S.sel !== h) selectItem(h); mode = "text"; }
   else { mode = "pan"; cv.classList.add("grabbing"); }
   last = p;
@@ -723,6 +956,8 @@ cv.addEventListener("pointermove", e => {
     return;
   }
   if (!last) return;
+  if (down && !down.moved && Math.hypot(e.clientX-down.cx, e.clientY-down.cy) < 4) return;   // 클릭 판정 여유
+  if (down) down.moved = true;
   const p = toDesign(e), dx = p.x-last.x, dy = p.y-last.y;
   if (mode === "pan" && S.src){ S.view.x += dx; S.view.y += dy; clampView(); render(); }
   else if (mode === "text"){
@@ -731,11 +966,19 @@ cv.addEventListener("pointermove", e => {
   }
   last = p;
 });
-["pointerup","pointercancel","lostpointercapture"].forEach(ev => cv.addEventListener(ev, e => {
+function endPointer(e){
   if (!ptrs.delete(e.pointerId)) return;
-  if (mode === "pinch" && ptrs.size < 2){ mode = null; last = null; pinch = null; }   // 핀치 후 남은 손가락으로 튀지 않게
-  if (!ptrs.size){ mode = null; last = null; cv.classList.remove("grabbing"); }
-}));
+  if (e.type === "pointerup" && down && !down.moved && mode !== "pinch"){
+    const d = down; down = null;
+    if (d.h !== null) openEditor(d.h);                  // 글자 클릭 → 바로 수정
+    else if (!S.src) openPicker();                      // 빈 카드 클릭 → 이미지 열기
+    else if (S.sel !== null) selectItem(null);
+  }
+  if (mode === "pinch" && ptrs.size < 2){ mode = null; last = null; pinch = null; }
+  if (!ptrs.size){ mode = null; last = null; down = null; cv.classList.remove("grabbing"); }
+}
+["pointerup","pointercancel"].forEach(ev => cv.addEventListener(ev, endPointer));
+cv.addEventListener("dblclick", e => { if (S.src && hit(toDesign(e)) === null) openPicker(); });  // 사진 더블클릭 → 교체
 function zoomAt(p, k){
   if (!S.src || !isFinite(k) || k <= 0) return;
   const mn = minScale(), old = S.view.s;
@@ -750,13 +993,18 @@ cv.addEventListener("wheel", e => {
 const typing = () => /^(INPUT|TEXTAREA|SELECT)$/.test((document.activeElement||{}).tagName||"");
 window.addEventListener("keydown", e => {
   if (!introEl.classList.contains("out") || typing()) return;
+  if (e.key === " " && (document.activeElement||{}).tagName !== "BUTTON"){
+    if (hasAnim()){ e.preventDefault(); setPlaying(!S.playing, !S.playing && textAnimOn()); }
+    return;
+  }
   if (e.key === "Escape" && S.sel !== null){ selectItem(null); return; }
+  if (e.key === "Enter" && S.sel !== null){ e.preventDefault(); openEditor(S.sel); return; }
   if ((e.key === "Delete" || e.key === "Backspace") && S.sel !== null && S.sel !== "title"){ e.preventDefault(); delText(S.sel); return; }
   const map = { ArrowLeft:[-1,0], ArrowRight:[1,0], ArrowUp:[0,-1], ArrowDown:[0,1] };
   if (!map[e.key] || S.sel === null) return;
   const o = selObj(); if (!o) return;
   const step = e.shiftKey ? 10 : 1;
-  e.preventDefault();
+  e.preventDefault(); pauseTextAnim();
   o.x += map[e.key][0]*step/DW; o.y += map[e.key][1]*step/DH; render();
 });
 
@@ -764,6 +1012,7 @@ window.addEventListener("keydown", e => {
 function addText(text, x, y, align, dash){
   const t = { id:uid++, text, x, y, align, dash };
   S.texts.push(t); selectItem(t.id);
+  return t;
 }
 function drawList(){
   const el = $("list"); el.innerHTML = "";
@@ -774,14 +1023,16 @@ function drawList(){
     d.innerHTML = `<b>${String(i+1).padStart(2,"0")}</b><span></span><button class="x" title="삭제"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button>`;
     d.querySelector("span").textContent = t.text.replace(/\*\*/g,"").replace(/\n/g," / ") || "(빈 문구)";
     d.onclick = () => selectItem(t.id);
+    d.ondblclick = () => openEditor(t.id);
     d.querySelector(".x").onclick = ev => { ev.stopPropagation(); delText(t.id); };
     el.appendChild(d);
   });
 }
 function delText(id){
+  if (S.editing === id){ S.editing = null; ied.classList.remove("show"); ihint.classList.remove("show"); }
   S.texts = S.texts.filter(t => t.id !== id);
   if (S.sel === id) S.sel = S.texts.length ? S.texts[S.texts.length-1].id : null;
-  drawList(); syncText(); render();
+  drawList(); syncText(); render(); updateAnimUI();
 }
 function selectItem(id){ S.sel = id; drawList(); syncText(); render(); }
 function syncText(){
@@ -791,6 +1042,7 @@ function syncText(){
   document.querySelectorAll("#tAlign button").forEach(b => { b.disabled = !on; b.classList.toggle("on", on && b.dataset.v === t.align); });
   document.querySelectorAll("#tDash button").forEach(b => { b.disabled = !on; b.classList.toggle("on", on && b.dataset.v === t.dash); });
   if (document.activeElement !== $("tText")) $("tText").value = on ? t.text : "";
+  if (document.activeElement !== $("nText")) $("nText").value = S.title.text;
   document.querySelectorAll("#nAlign button").forEach(b => b.classList.toggle("on", b.dataset.v === S.title.align));
 }
 
@@ -798,15 +1050,17 @@ function syncText(){
 function seg(el, items, onPick, isOn){
   items.forEach(([n,v]) => {
     const b = document.createElement("button");
-    b.textContent = n; b.dataset.v = v;
+    b.textContent = n; b.dataset.v = String(v);
     if (isOn && isOn(v)) b.classList.add("on");
-    b.onclick = () => onPick(v, b);
+    b.onclick = () => {
+      [...el.children].forEach(x => x.classList.toggle("on", x === b));
+      onPick(v, b);
+    };
     el.appendChild(b);
   });
 }
-seg($("ratios"), RATIOS, (r, b) => {
+seg($("ratios"), RATIOS, r => {
   DH = Math.round(DW/r);
-  document.querySelectorAll("#ratios button").forEach(x => x.classList.toggle("on", x === b));
   cv.style.aspectRatio = `${DW} / ${DH}`;
   if (S.src) fitCover(); else render();
 }, r => r === RATIOS[0][1]);
@@ -816,18 +1070,37 @@ const ALIGNS = [["왼쪽","left"],["중앙","center"],["오른쪽","right"]];
 seg($("tAlign"), ALIGNS, v => { const t = S.texts.find(x => x.id === S.sel); if (!t) return; t.align = v; t.x = MARGIN[v]; syncText(); render(); });
 seg($("nAlign"), ALIGNS, v => { S.title.align = v; S.title.x = MARGIN[v]; syncText(); render(); });
 seg($("tDash"), [["앞","pre"],["뒤","post"],["없음","none"]], v => { const t = S.texts.find(x => x.id === S.sel); if (!t) return; t.dash = v; syncText(); render(); });
-seg($("gifSize"), GIF_SIZES, (v, b) => {
-  S.gifW = v;
-  document.querySelectorAll("#gifSize button").forEach(x => x.classList.toggle("on", x === b));
-}, v => v === S.gifW);
 
-$("btnAdd").onclick = () => addText("문구를 **입력**하세요", MARGIN.left, 0.32, "left", "post");
+/* 글씨 애니메이션 */
+const replay = () => setPlaying(true, true);
+FX_TYPES.forEach(([n, v, g]) => {
+  const b = document.createElement("button");
+  b.dataset.v = v; b.innerHTML = `<span class="g"></span>${n}`;
+  b.querySelector(".g").textContent = g;
+  if (v === S.fx.type) b.classList.add("on");
+  b.onclick = () => {
+    S.fx.type = v;
+    [...$("fxGrid").children].forEach(x => x.classList.toggle("on", x === b));
+    if (v === "none") setPlaying(!!(S.src && S.src.anim), true); else replay();
+  };
+  $("fxGrid").appendChild(b);
+});
+seg($("fxSpeed"), FX_SPEED, v => { S.fx.speed = v; replay(); }, v => v === S.fx.speed);
+seg($("fxHold"),  FX_HOLD,  v => { S.fx.hold = v; replay(); },  v => v === S.fx.hold);
+seg($("fxOrder"), FX_ORDER, v => { S.fx.order = v; replay(); }, v => v === S.fx.order);
+seg($("fxBg"),    FX_BG,    v => { S.fx.bg = v; replay(); },    v => v === S.fx.bg);
+seg($("gifSize"), GIF_SIZES, v => { S.gifW = v; }, v => v === S.gifW);
+seg($("gifFps"),  GIF_FPS,   v => { S.gifDt = v; }, v => v === S.gifDt);
+seg($("gifQ"), Object.entries(GIF_Q).map(([k,q]) => [q.label, k]), v => { S.gifQ = v; $("qInfo").textContent = GIF_Q[v].info; }, v => v === S.gifQ);
+$("qInfo").textContent = GIF_Q[S.gifQ].info;
+
+$("btnAdd").onclick = () => { pauseTextAnim(); const t = addText("문구를 **입력**하세요", MARGIN.left, 0.32, "left", "post"); updateAnimUI(); openEditor(t.id); };
 $("btnDel").onclick = () => { if (S.sel !== null && S.sel !== "title") delText(S.sel); };
 $("btnFit").onclick = fitCover;
 $("btnDeselect").onclick = () => selectItem(null);
 $("tText").addEventListener("input", e => {
   const t = S.texts.find(x => x.id === S.sel); if (!t) return;
-  t.text = e.target.value; drawList(); render();
+  t.text = e.target.value; drawList(); render(); updateClock();
 });
 
 /* 그라데이션 색 */
@@ -857,8 +1130,51 @@ $("gHex").addEventListener("blur", e => { e.target.value = S.gradColor.toUpperCa
 $("nText").addEventListener("input", e => {
   const v = e.target.value.replace(/[\r\n\t]+/g," ");
   if (v !== e.target.value) e.target.value = v;
-  S.title.text = v; render();
+  S.title.text = v; render(); updateClock();
 });
+
+/* ---------- GIF 디더링 (Floyd–Steinberg) ---------- */
+function ditherIndex(d, W, H, pal, strength, prevD, prevIdx){
+  const cache = new Int16Array(65536).fill(-1);
+  const near = (r, g, b) => {
+    const key = ((r >> 3) << 11) | ((g >> 2) << 5) | (b >> 3);
+    let v = cache[key];
+    if (v < 0){
+      let bd = Infinity;
+      for (let i = 0; i < pal.length; i++){
+        const p = pal[i], dr = r-p[0], dg = g-p[1], db = b-p[2];
+        const dist = dr*dr*0.3 + dg*dg*0.59 + db*db*0.11;
+        if (dist < bd){ bd = dist; v = i; }
+      }
+      cache[key] = v;
+    }
+    return v;
+  };
+  const buf = new Float32Array(W*H*3);
+  for (let i = 0, j = 0; i < W*H; i++, j += 4){ buf[i*3] = d[j]; buf[i*3+1] = d[j+1]; buf[i*3+2] = d[j+2]; }
+  const idx = new Uint8Array(W*H);
+  const cl = v => v < 0 ? 0 : v > 255 ? 255 : v;
+  for (let y = 0; y < H; y++){
+    for (let x = 0; x < W; x++){
+      const i = y*W + x, o = i*3;
+      const r = cl(buf[o]), g = cl(buf[o+1]), b = cl(buf[o+2]);
+      const j = i*4;
+      // 이전 장면과 원본 픽셀이 같으면 같은 색을 그대로 써서 깜빡임·용량 증가를 막음
+      const k = (prevIdx && d[j] === prevD[j] && d[j+1] === prevD[j+1] && d[j+2] === prevD[j+2]) ? prevIdx[i] : near(r|0, g|0, b|0);
+      idx[i] = k;
+      const p = pal[k];
+      const er = (r - p[0]) * strength, eg = (g - p[1]) * strength, eb = (b - p[2]) * strength;
+      if (x+1 < W){ buf[o+3] += er*7/16; buf[o+4] += eg*7/16; buf[o+5] += eb*7/16; }
+      if (y+1 < H){
+        const n = o + W*3;
+        if (x > 0){ buf[n-3] += er*3/16; buf[n-2] += eg*3/16; buf[n-1] += eb*3/16; }
+        buf[n] += er*5/16; buf[n+1] += eg*5/16; buf[n+2] += eb*5/16;
+        if (x+1 < W){ buf[n+3] += er/16; buf[n+4] += eg/16; buf[n+5] += eb/16; }
+      }
+    }
+  }
+  return idx;
+}
 
 /* ---------- 저장 ---------- */
 const fileBase = () => (S.title.text.trim() || "cove").replace(/[^\w가-힣ㄱ-ㅎㅏ-ㅣ-]+/g,"_");
@@ -875,41 +1191,93 @@ $("btnSave").onclick = () => {
   c.width = Math.round(DW*m); c.height = Math.round(DH*m);
   const x = c.getContext("2d");
   x.setTransform(m,0,0,m,0,0);
-  draw(x, false);
+  draw(x, false, frameAt(S.clock), null);
   c.toBlob(b => download(b, fileBase() + ".png"), "image/png");
 };
+/* GIF에 들어갈 프레임 목록: { t(글씨 시각|null), bg(배경 시각), delay } */
+function gifPlan(){
+  const out = [];
+  const srcAnim = !!(S.src && S.src.anim);
+  if (textAnimOn()){
+    const TL = timeline(), dt = S.gifDt;
+    for (let t = 0; t < TL.animEnd; t += dt) out.push({ t, bg:t, delay:dt });
+    if (srcAnim){ for (let t = TL.animEnd; t < TL.total; t += dt) out.push({ t:TL.animEnd, bg:t, delay:dt }); }
+    else out.push({ t:TL.animEnd, bg:TL.animEnd, delay:S.fx.hold });     // 정지 배경이면 마지막 장면 한 장으로 멈춤
+  } else if (srcAnim){
+    let acc = 0;
+    S.src.frames.forEach(f => { out.push({ t:null, bg:acc, delay:f.delay }); acc += f.delay; });
+  }
+  return out;
+}
 $("btnGif").onclick = async () => {
-  if (!S.src || !S.src.anim || S.busy || !window.GIFLIB) return;
+  if (S.busy || !window.GIFLIB) return;
+  const plan = gifPlan(); if (!plan.length) return;
   const G = window.GIFLIB;
-  S.busy = true; updateGifUI();
+  closeEditor();
+  const wasPlaying = S.playing; setPlaying(false);
+  S.busy = true; updateAnimUI();
   const prog = $("prog"), bar = prog.firstElementChild, lbl = $("gifLbl");
-  prog.classList.add("show"); bar.style.width = "0%";
+  prog.classList.add("show"); bar.style.width = "0%"; lbl.textContent = "준비 중";
   try {
     const W = S.gifW, m = W/DW, H = Math.round(DH*m);
     const c = document.createElement("canvas"); c.width = W; c.height = H;
     const x = c.getContext("2d", { willReadFrequently:true });
+    const grab = f => { x.setTransform(m,0,0,m,0,0); draw(x, false, frameAt(f.bg), f.t); return x.getImageData(0,0,W,H).data; };
+
+    const Q = GIF_Q[S.gifQ];
+    // 배경이 계속 바뀌면(움직이는 GIF·줌·페이드) 고화질에선 프레임마다 팔레트를 새로 뽑음
+    const bgMoves = !!(S.src && S.src.anim) || (textAnimOn() && S.fx.bg !== "none");
+    const perFrame = Q.local && bgMoves;
+
+    const quant = (list, step) => {          // 여러 장면을 섞어서 팔레트 계산
+      const per = Math.ceil(W*H/step);
+      const sample = new Uint8ClampedArray(per*4*list.length);
+      let so = 0;
+      for (const d of list){
+        for (let p = 0; p < W*H; p += step){ const q = p*4; sample[so++]=d[q]; sample[so++]=d[q+1]; sample[so++]=d[q+2]; sample[so++]=255; }
+      }
+      return G.quantize(sample.subarray(0, so), Q.colors, { format:"rgb565" });
+    };
+    let gPal = null;
+    if (!perFrame){
+      const n = Math.min(Q.picks, plan.length);
+      const picks = [...new Set(Array.from({ length:n }, (_, i) => Math.round(i*(plan.length-1)/Math.max(1, n-1))))];
+      const list = [];
+      for (const i of picks){ list.push(grab(plan[i]).slice()); await new Promise(r => setTimeout(r, 0)); }
+      gPal = quant(list, Q.step);
+    }
+
     const enc = G.GIFEncoder();
-    const n = S.src.frames.length;
-    for (let i = 0; i < n; i++){
-      x.setTransform(m,0,0,m,0,0);
-      draw(x, false, i);
-      const data = x.getImageData(0,0,W,H).data;
-      const pal = G.quantize(data, 256, { format:"rgb565" });
-      const idx = G.applyPalette(data, pal, "rgb565");
-      enc.writeFrame(idx, W, H, { palette:pal, delay:S.src.frames[i].delay, repeat:0 });
-      const pct = Math.round((i+1)/n*100);
+    let prevCol = null, prevD = null, prevIdx = null;
+    for (let i = 0; i < plan.length; i++){
+      const d = grab(plan[i]);
+      const pal = perFrame ? quant([d], 1) : gPal;
+      const idx = Q.dither > 0 ? ditherIndex(d, W, H, pal, Q.dither, perFrame ? null : prevD, perFrame ? null : prevIdx) : G.applyPalette(d, pal, "rgb565");
+      const tIdx = pal.length, fullPal = [...pal, [0,0,0]];
+      const col = new Uint32Array(W*H);
+      for (let k = 0; k < col.length; k++){ const c = pal[idx[k]]; col[k] = (c[0]<<16)|(c[1]<<8)|c[2]; }
+      if (!prevCol){
+        enc.writeFrame(idx, W, H, { palette:fullPal, delay:plan[i].delay, repeat:0, dispose:1 });
+      } else {
+        const out = new Uint8Array(idx.length);   // 이전 장면과 같은 색인 픽셀은 투명 → 용량 절약
+        for (let k = 0; k < idx.length; k++) out[k] = col[k] === prevCol[k] ? tIdx : idx[k];
+        enc.writeFrame(out, W, H, { palette: perFrame ? fullPal : null, transparent:true, transparentIndex:tIdx, delay:plan[i].delay, dispose:1 });
+      }
+      prevCol = col; prevD = d.slice(); prevIdx = idx;
+      const pct = Math.round((i+1)/plan.length*100);
       bar.style.width = pct + "%"; lbl.textContent = `${pct}%`;
       await new Promise(r => setTimeout(r, 0));
     }
     enc.finish();
-    download(new Blob([enc.bytes()], { type:"image/gif" }), `${fileBase()}_${W}px.gif`);
-    toast("GIF 저장 완료");
+    const blob = new Blob([enc.bytes()], { type:"image/gif" });
+    download(blob, `${fileBase()}_${W}px.gif`);
+    toast(`GIF 저장 완료 · ${plan.length}장 · ${(blob.size/1048576).toFixed(1)}MB`);
   } catch(err){
     console.error(err); toast("GIF를 만들지 못했어요");
   } finally {
     S.busy = false; lbl.textContent = "GIF 저장";
     setTimeout(() => prog.classList.remove("show"), 600);
-    updateGifUI();
+    setPlaying(wasPlaying);
   }
 };
 
@@ -924,6 +1292,7 @@ function enterApp(){
 function bindIntro(el){ introEl = el; el.addEventListener("click", enterApp); }
 function playIntro(){
   clearTimeout(introTimer);
+  closeEditor();
   document.body.classList.remove("entered");
   document.body.classList.add("pre");
   const fresh = introEl.cloneNode(true);
@@ -946,11 +1315,12 @@ addText("소속, **직급**", MARGIN.left, 0.225, "left", "post");
 addText("한 줄 **소개**", MARGIN.right, 0.135, "right", "pre");
 selectItem(S.texts[0].id);
 setGrad(S.gradColor);
-updateGifUI();
+updateAnimUI();
 render();
 if (document.fonts){
   Promise.all([
     document.fonts.load('700 132px "Quantico"'),
+    document.fonts.load('400 132px "Quantico"'),
     document.fonts.load('400 30px "Noto Sans KR"'),
     document.fonts.load('700 30px "Noto Sans KR"')
   ]).catch(() => {}).then(render);
@@ -958,5 +1328,6 @@ if (document.fonts){
 }
 })();
 </script>
+
 </body>
 </html>
